@@ -1,0 +1,20 @@
+//
+// Created by Tomev on 17/01/2021.
+//
+
+#include "TranslatedDilatedScalingFunction.h"
+#include <cmath>
+
+TranslatedDilatedScalingFunction::TranslatedDilatedScalingFunction(const double &dilation, const double &translation)
+  : dilation_index_(dilation), translation_index_(translation) {
+  scaling_function_ = boost::math::daubechies_scaling<double, daubechies_wavelet_number_>();
+}
+
+double TranslatedDilatedScalingFunction::GetValue(const double &x) const {
+  return pow(2,  dilation_index_ / 2.0) * (pow(2, dilation_index_) * x - translation_index_);
+}
+
+void TranslatedDilatedScalingFunction::UpdateIndices(const double &dilation, const double &translation) {
+  dilation_index_ = dilation;
+  translation_index_ = translation;
+}

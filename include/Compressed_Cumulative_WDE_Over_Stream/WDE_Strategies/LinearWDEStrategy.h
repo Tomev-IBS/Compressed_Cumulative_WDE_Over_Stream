@@ -20,12 +20,16 @@ class LinearWDEStrategy : public WDEStrategy{
     void UpdateWDEData(const vector<double> &values_block) override;
     double GetValue(const double &x) const override;
     void LowerResolution() override;
-  private:
+    int GetResolutionIndex() const override;
+    void MultiplyWeight(const double &multiplicator);
+
+  protected:
 
     int resolution_index_ = 0;
     int k_min_ = 0;
     int k_max_ = 0;
     vector<EmpiricalCoefficientData> empirical_scaling_coefficients_ = {};
+    double weight_ = 1;
 
     double coefficient_threshold_ = 1e-5; // Denotes if the coefficient should be included.
 

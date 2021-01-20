@@ -22,6 +22,8 @@ class WDEStrategy{
     virtual void UpdateWDEData(const vector<double> &values) = 0;
     virtual void LowerResolution() = 0;
     virtual double GetValue(const double &x) const = 0;
+    virtual int GetResolutionIndex() const = 0;
+    virtual void MultiplyWeight(const double &multiplicator) = 0;
 };
 
 

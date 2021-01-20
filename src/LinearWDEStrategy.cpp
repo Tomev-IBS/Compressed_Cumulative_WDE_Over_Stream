@@ -126,7 +126,7 @@ double LinearWDEStrategy::GetValue(const double &x) const {
     result += data.coefficient_ * scaling_function.GetValue(x);
   }
 
-  return result;
+  return weight_ * result;
 }
 
 /** Computes coefficients for the lower resolution.
@@ -184,4 +184,12 @@ void LinearWDEStrategy::ComputeLowerResolutionTranslations(const int &number_of_
 
   k_min_ = k_min;
   k_max_ = k_max;
+}
+
+int LinearWDEStrategy::GetResolutionIndex() const {
+  return resolution_index_;
+}
+
+void LinearWDEStrategy::MultiplyWeight(const double &multiplicator) {
+  weight_ *= multiplicator;
 }

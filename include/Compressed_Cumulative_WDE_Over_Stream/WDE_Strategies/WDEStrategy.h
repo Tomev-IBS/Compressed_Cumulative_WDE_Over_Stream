@@ -20,6 +20,7 @@ struct EmpiricalCoefficientData{
 class WDEStrategy{
   public:
     virtual void UpdateWDEData(const vector<double> &values) = 0;
+    virtual void LowerResolution() = 0;
     virtual double GetValue(const double &x) const = 0;
 };
 

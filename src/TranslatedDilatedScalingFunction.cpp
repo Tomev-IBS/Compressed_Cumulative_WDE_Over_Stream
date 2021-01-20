@@ -18,3 +18,11 @@ void TranslatedDilatedScalingFunction::UpdateIndices(const double &dilation, con
   dilation_index_ = dilation;
   translation_index_ = translation;
 }
+
+std::pair<double, double> TranslatedDilatedScalingFunction::GetOriginalScalingFunctionSupport() {
+  return scaling_function_.support();
+}
+
+std::array<double, 2 * TranslatedDilatedScalingFunction::daubechies_wavelet_number_> TranslatedDilatedScalingFunction::GetFilterCoefficients() {
+  return daubechies_scaling_filter<double, daubechies_wavelet_number_>();
+}

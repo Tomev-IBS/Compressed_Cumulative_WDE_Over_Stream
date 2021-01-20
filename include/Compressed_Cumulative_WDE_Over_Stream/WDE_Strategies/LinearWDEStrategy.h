@@ -19,6 +19,7 @@ class LinearWDEStrategy : public WDEStrategy{
     explicit LinearWDEStrategy(const double &threshold = 1e-5);
     void UpdateWDEData(const vector<double> &values_block) override;
     double GetValue(const double &x) const override;
+    void LowerResolution() override;
   private:
 
     int resolution_index_ = 0;
@@ -31,7 +32,7 @@ class LinearWDEStrategy : public WDEStrategy{
     void ComputeOptimalResolutionIndex(const vector<double> &values_block);
     void ComputeTranslations(const vector<double> &values_block);
     void ComputeEmpiricalScalingCoefficients(const vector<double> &values);
-
+    void ComputeLowerResolutionTranslations(const int &number_of_filter_coefficients);
 };
 
 #endif //COMPRESSED_CUMULATIVE_WDE_OVER_STREAM_LINEARWDESTRATEGY_H

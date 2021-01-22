@@ -11,7 +11,7 @@ TranslatedDilatedScalingFunction::TranslatedDilatedScalingFunction(const double 
 }
 
 double TranslatedDilatedScalingFunction::GetValue(const double &x) const {
-  return pow(2,  dilation_index_ / 2.0) * (pow(2, dilation_index_) * x - translation_index_);
+  return pow(2,  dilation_index_ / 2.0) * scaling_function_(pow(2, dilation_index_) * x - translation_index_);
 }
 
 void TranslatedDilatedScalingFunction::UpdateIndices(const double &dilation, const double &translation) {

@@ -4,24 +4,32 @@
 // Header file for Linear Wavelet Density Estimation Strategy. It's meant for 1D data.
 //
 
-#ifndef COMPRESSED_CUMULATIVE_WDE_OVER_STREAM_LINEARWDESTRATEGY_H
-#define COMPRESSED_CUMULATIVE_WDE_OVER_STREAM_LINEARWDESTRATEGY_H
+#ifndef COMPRESSED_CUMULATIVE_WDE_OVER_STREAM_LINEARWDE_H
+#define COMPRESSED_CUMULATIVE_WDE_OVER_STREAM_LINEARWDE_H
 
-#include "WDEStrategy.h"
+#include "WaveletDensityEstimator.h"
 #include "TranslatedDilatedScalingFunction.h"
 
 #include <vector>
 
 using std::vector;
 
-class LinearWDEStrategy : public WDEStrategy{
+class LinearWDE : public WaveletDensityEstimator {
   public:
-    explicit LinearWDEStrategy(const double &threshold = 1e-5);
-    void UpdateWDEData(const vector<double> &values_block) override;
+    explicit LinearWDE(const double &threshold = 1e-5);
+
     double GetValue(const double &x) const override;
-    void LowerResolution() override;
+
+    void UpdateWDEData(const vector<double> &values_block) override;
+    void LowerCoefficientsResolution() override;
+
     int GetResolutionIndex() const override;
-    void MultiplyWeight(const double &multiplicator);
+    vector<EmpiricalCoefficientData> GetEmpiricalCoefficients() const override;
+
+    double GetWeight() const override;
+    void SetWeight(const double &new_weight) override;
+    void MultiplyWeight(const double &multiplier) override;
+
 
   protected:
 
@@ -39,4 +47,4 @@ class LinearWDEStrategy : public WDEStrategy{
     void ComputeLowerResolutionTranslations(const int &number_of_filter_coefficients);
 };
 
-#endif //COMPRESSED_CUMULATIVE_WDE_OVER_STREAM_LINEARWDESTRATEGY_H
+#endif //COMPRESSED_CUMULATIVE_WDE_OVER_STREAM_LINEARWDE_H

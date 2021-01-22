@@ -4,7 +4,7 @@
 // Implementation of Linear Wavelet Density Estimator strategy.
 //
 
-#include "WDE_Strategies/LinearWDEStrategy.h"
+#include "WDE_Strategies/LinearWDE.h"
 
 #include <cmath>
 #include <numeric>
@@ -33,14 +33,14 @@ double stDev(const vector<double> &values){
   return sqrt(squares_sum / values.size() - pow(mean, 2));
 }
 
-LinearWDEStrategy::LinearWDEStrategy(const double &threshold)
+LinearWDE::LinearWDE(const double &threshold)
     :  coefficient_threshold_(threshold) { }
 
 /** Updates linear WDE data.
  * @brief Updates linear WDE data.
  * @param values_block - Block of new values which will be used during update process.
  */
-void LinearWDEStrategy::UpdateWDEData(const vector<double> &values_block) {
+void LinearWDE::UpdateWDEData(const vector<double> &values_block) {
   ComputeOptimalResolutionIndex(values_block);
   ComputeTranslations(values_block);
   ComputeEmpiricalScalingCoefficients(values_block);
@@ -52,7 +52,7 @@ void LinearWDEStrategy::UpdateWDEData(const vector<double> &values_block) {
  * @param values_block - Values from which resolution (dilation) index is computed.
  * @return Optimal resolution index.
  */
-void LinearWDEStrategy::ComputeOptimalResolutionIndex(const vector<double> &values_block) {
+void LinearWDE::ComputeOptimalResolutionIndex(const vector<double> &values_block) {
     resolution_index_ = log2(values_block.size()) / 3.0 - 2.0 - log2(stDev(values_block));
 }
 
@@ -60,7 +60,7 @@ void LinearWDEStrategy::ComputeOptimalResolutionIndex(const vector<double> &valu
  * @brief Computes k_min and k_max (translation indices).
  * @param values_block - SORTED vector of values.
  */
-void LinearWDEStrategy::ComputeTranslations(const vector<double> &values_block) {
+void LinearWDE::ComputeTranslations(const vector<double> &values_block) {
 
   auto translated_dilated_scaling_function = TranslatedDilatedScalingFunction(0, 0);
   auto support = translated_dilated_scaling_function.GetOriginalScalingFunctionSupport();
@@ -75,7 +75,7 @@ void LinearWDEStrategy::ComputeTranslations(const vector<double> &values_block) 
  * @brief Computes most important (according to threshold) empirical scaling function coefficients.
  * @param values - Vector of values in the block.
  */
-void LinearWDEStrategy::ComputeEmpiricalScalingCoefficients(const vector<double> &values) {
+void LinearWDE::ComputeEmpiricalScalingCoefficients(const vector<double> &values) {
 
   empirical_scaling_coefficients_ = {};
 
@@ -116,7 +116,7 @@ void LinearWDEStrategy::ComputeEmpiricalScalingCoefficients(const vector<double>
  * @param x - 1D point in which the value of function should be computed.
  * @return Value of DWT in x.
  */
-double LinearWDEStrategy::GetValue(const double &x) const {
+double LinearWDE::GetValue(const double &x) const {
   double result = 0;
 
   auto scaling_function = TranslatedDilatedScalingFunction(resolution_index_, 0);
@@ -132,7 +132,7 @@ double LinearWDEStrategy::GetValue(const double &x) const {
 /** Computes coefficients for the lower resolution.
  * @brief Computes coefficients for the lower resolution.
  */
-void LinearWDEStrategy::LowerResolution() {
+void LinearWDE::LowerCoefficientsResolution() {
   --resolution_index_;
 
   auto scaling_function = TranslatedDilatedScalingFunction(0, 0);
@@ -174,7 +174,7 @@ void LinearWDEStrategy::LowerResolution() {
   cout << "Got " << empirical_scaling_coefficients_.size() << " coefficients.\n";
 }
 
-void LinearWDEStrategy::ComputeLowerResolutionTranslations(const int &number_of_filter_coefficients) {
+void LinearWDE::ComputeLowerResolutionTranslations(const int &number_of_filter_coefficients) {
   int min_coefficient_number = 0;
   int max_coefficient_number = number_of_filter_coefficients - 1;
 
@@ -186,10 +186,18 @@ void LinearWDEStrategy::ComputeLowerResolutionTranslations(const int &number_of_
   k_max_ = k_max;
 }
 
-int LinearWDEStrategy::GetResolutionIndex() const {
+int LinearWDE::GetResolutionIndex() const {
   return resolution_index_;
 }
 
-void LinearWDEStrategy::MultiplyWeight(const double &multiplicator) {
-  weight_ *= multiplicator;
+void LinearWDE::MultiplyWeight(const double &multiplier) {
+  weight_ *= multiplier;
+}
+
+double LinearWDE::GetWeight() const {
+  return weight_;
+}
+
+vector<EmpiricalCoefficientData> LinearWDE::GetEmpiricalCoefficients() const {
+  return empirical_scaling_coefficients_;
 }

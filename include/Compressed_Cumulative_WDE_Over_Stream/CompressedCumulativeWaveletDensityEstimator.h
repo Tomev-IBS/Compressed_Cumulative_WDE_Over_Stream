@@ -5,7 +5,7 @@
 #ifndef COMPRESSED_CUMULATIVE_WDE_OVER_STREAM_COMPRESSEDCUMULATIVEWAVELETDENSITYESTIMATOR_H
 #define COMPRESSED_CUMULATIVE_WDE_OVER_STREAM_COMPRESSEDCUMULATIVEWAVELETDENSITYESTIMATOR_H
 
-#include "WDE_Strategies/WDEStrategy.h"
+#include "WaveletDensityEstimator.h"
 #include <vector>
 
 using std::vector;
@@ -17,14 +17,22 @@ typedef vector<double> point;
  */
 class CompressedCumulativeWaveletDensityEstimator{
   public:
-    CompressedCumulativeWaveletDensityEstimator() = default;
+    CompressedCumulativeWaveletDensityEstimator(const unsigned int &maximal_number_of_empirical_coefficients,
+                                                const double &weights_modifier_);
     void UpdateEstimator(const vector<double> &values_block); // TR TODO: Vector of some kind of points?
-    double GetValue(const vector<point> &x) const; // TR TODO: This should have some kind of interface
+    double GetValue(const point &x) const; // TR TODO: This should have some kind of interface
   protected:
-    void CalculateBlockWDE(vector<double> values_block);
 
-    vector<WDEStrategy> WDE_Blocks = {};
+    WaveletDensityEstimator* (*wde_factory_method_)(const vector<double> &values_block);
+    vector<WDEPtr> estimators = {};
+    unsigned int maximal_number_of_empirical_coefficients_ = 0;
+    double weights_modifier_ = 0.75; // omega
 
+    void AddNewEstimatorFromBlock(vector<double> values_block);
+    void DecomposeToTheSameResolution();
+    int FindLowestResolution() const;
+    void UpdateWeights();
+    void ConvexMergeEstimators();
 };
 
 typedef CompressedCumulativeWaveletDensityEstimator CC_WDE;

@@ -8,9 +8,10 @@
 #include <iostream>
 
 CompressedCumulativeWaveletDensityEstimator::CompressedCumulativeWaveletDensityEstimator(
-    const unsigned int &maximal_number_of_empirical_coefficients, const double &weights_modifier_)
+    const unsigned int &maximal_number_of_empirical_coefficients, const double &weights_modifier_,
+    WaveletDensityEstimator* (*wde_factory_method)(const vector<double> &values_block))
   : maximal_number_of_empirical_coefficients_(maximal_number_of_empirical_coefficients),
-    weights_modifier_(weights_modifier_)
+    weights_modifier_(weights_modifier_), wde_factory_method_(wde_factory_method)
 {
 
 }

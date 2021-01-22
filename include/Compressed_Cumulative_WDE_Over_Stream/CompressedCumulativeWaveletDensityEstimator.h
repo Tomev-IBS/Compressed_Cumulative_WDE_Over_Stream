@@ -18,7 +18,8 @@ typedef vector<double> point;
 class CompressedCumulativeWaveletDensityEstimator{
   public:
     CompressedCumulativeWaveletDensityEstimator(const unsigned int &maximal_number_of_empirical_coefficients,
-                                                const double &weights_modifier_);
+                                                const double &weights_modifier_,
+                                                WaveletDensityEstimator* (*wde_factory_method)(const vector<double> &values_block));
     void UpdateEstimator(const vector<double> &values_block); // TR TODO: Vector of some kind of points?
     double GetValue(const point &x) const; // TR TODO: This should have some kind of interface
   protected:

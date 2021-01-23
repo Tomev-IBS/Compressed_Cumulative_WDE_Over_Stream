@@ -5,9 +5,11 @@
 #include "TranslatedDilatedScalingFunction.h"
 #include <cmath>
 
-TranslatedDilatedScalingFunction::TranslatedDilatedScalingFunction(const double &dilation, const double &translation)
+TranslatedDilatedScalingFunction::TranslatedDilatedScalingFunction(const double &dilation, const double &translation,
+                                                                   const int &grid_refinement)
   : dilation_index_(dilation), translation_index_(translation) {
-  scaling_function_ = boost::math::daubechies_scaling<double, daubechies_wavelet_number_>();
+  scaling_function_ =
+      boost::math::daubechies_scaling<double, daubechies_wavelet_number_>(grid_refinement);
 }
 
 double TranslatedDilatedScalingFunction::GetValue(const double &x) const {

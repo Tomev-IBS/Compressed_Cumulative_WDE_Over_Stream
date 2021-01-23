@@ -14,7 +14,7 @@ class TranslatedDilatedScalingFunction{
   public:
     static constexpr const int daubechies_wavelet_number_ = 5;
 
-    TranslatedDilatedScalingFunction(const double &dilation, const double &translation);
+    TranslatedDilatedScalingFunction(const double &dilation, const double &translation, const int &grid_refinement = -2);
     double GetValue(const double &x) const;
     void UpdateIndices(const double &dilation, const double &translation);
     std::pair<double, double> GetOriginalScalingFunctionSupport();

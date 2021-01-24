@@ -25,6 +25,15 @@ std::pair<double, double> TranslatedDilatedScalingFunction::GetOriginalScalingFu
   return scaling_function_.support();
 }
 
+std::pair<double, double> TranslatedDilatedScalingFunction::GetTranslatedDilatedScalingFunctionSupport() const {
+  auto scaling_function_support = scaling_function_.support();
+  scaling_function_support.first = pow(2, -dilation_index_) * (scaling_function_support.first + translation_index_);
+  scaling_function_support.second = pow(2, -dilation_index_) * (scaling_function_support.second + translation_index_);
+  return scaling_function_support;
+}
+
 std::array<double, 2 * TranslatedDilatedScalingFunction::daubechies_wavelet_number_> TranslatedDilatedScalingFunction::GetFilterCoefficients() {
   return daubechies_scaling_filter<double, daubechies_wavelet_number_>();
 }
+
+

@@ -18,12 +18,15 @@ class TranslatedDilatedScalingFunction{
     double GetValue(const double &x) const;
     void UpdateIndices(const double &dilation, const double &translation);
     std::pair<double, double> GetOriginalScalingFunctionSupport();
+    std::pair<double, double> GetTranslatedDilatedScalingFunctionSupport() const;
     std::array<double, 2 * daubechies_wavelet_number_> GetFilterCoefficients();
+
+    boost::math::daubechies_scaling<double, daubechies_wavelet_number_> scaling_function_;
 
   protected:
     double dilation_index_; // j
     double translation_index_; // k
-    boost::math::daubechies_scaling<double, daubechies_wavelet_number_> scaling_function_;
+
 };
 
 #endif //COMPRESSED_CUMULATIVE_WDE_OVER_STREAM_TRANSLATEDDILATEDSCALINGFUNCTION_H

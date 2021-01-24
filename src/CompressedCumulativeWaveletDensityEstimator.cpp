@@ -5,7 +5,6 @@
 #include "CompressedCumulativeWaveletDensityEstimator.h"
 
 #include <algorithm>
-#include <iostream>
 
 CompressedCumulativeWaveletDensityEstimator::CompressedCumulativeWaveletDensityEstimator(
     const unsigned int &maximal_number_of_empirical_coefficients, const double &weights_modifier_,
@@ -76,7 +75,7 @@ int CompressedCumulativeWaveletDensityEstimator::FindLowestResolution() const {
 }
 
 void CompressedCumulativeWaveletDensityEstimator::UpdateWeights() {
-  if(estimators_.size() > 2){
+  if(estimators_.size() > 1){
     estimators_[0]->MultiplyWeight(1.0 - weights_modifier_);
     estimators_[1]->MultiplyWeight(weights_modifier_);
   }

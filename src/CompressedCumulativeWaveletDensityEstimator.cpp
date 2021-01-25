@@ -5,27 +5,29 @@
 #include "CompressedCumulativeWaveletDensityEstimator.h"
 
 #include <algorithm>
-#include <iostream>
 
 CompressedCumulativeWaveletDensityEstimator::CompressedCumulativeWaveletDensityEstimator(
-    const unsigned int &maximal_number_of_empirical_coefficients, const double &weights_modifier_)
+    const unsigned int &maximal_number_of_empirical_coefficients, const double &weights_modifier_,
+    WaveletDensityEstimator* (*wde_factory_method)(const vector<double> &values_block),
+    const double &block_size)
   : maximal_number_of_empirical_coefficients_(maximal_number_of_empirical_coefficients),
-    weights_modifier_(weights_modifier_)
-{
-
-}
+    weights_modifier_(weights_modifier_), wde_factory_method_(wde_factory_method), block_size_(block_size) { }
 
 void CompressedCumulativeWaveletDensityEstimator::UpdateEstimator(const vector<double> &values_block) {
   AddNewEstimatorFromBlock(values_block);
   DecomposeToTheSameResolution();
   UpdateWeights();
   ConvexMergeEstimators();
+  // At this points there should be only one estimator.
+  while(estimators_[0]->GetEmpiricalCoefficientsNumber() > maximal_number_of_empirical_coefficients_){
+    estimators_[0]->LowerCoefficientsResolution();
+  }
 }
 
 void CompressedCumulativeWaveletDensityEstimator::AddNewEstimatorFromBlock(vector<double> values_block) {
   std::sort(values_block.begin(), values_block.end());
 
-  estimators.push_back(WDEPtr(wde_factory_method_(values_block)));
+  estimators_.push_back(WDEPtr(wde_factory_method_(values_block)));
 }
 
 /** Computes value of CCWDE in given point.
@@ -36,7 +38,7 @@ void CompressedCumulativeWaveletDensityEstimator::AddNewEstimatorFromBlock(vecto
 double CompressedCumulativeWaveletDensityEstimator::GetValue(const point &x) const {
   double result = 0;
 
-  for(const auto & estimator : estimators){
+  for(const auto & estimator : estimators_){
     result += estimator->GetValue(x[0]);
   }
 
@@ -49,7 +51,7 @@ double CompressedCumulativeWaveletDensityEstimator::GetValue(const point &x) con
 void CompressedCumulativeWaveletDensityEstimator::DecomposeToTheSameResolution() {
   int lowest_resolution = FindLowestResolution();
 
-  for(auto & estimator : estimators){
+  for(auto & estimator : estimators_){
     while(estimator->GetResolutionIndex() < lowest_resolution){
       estimator->LowerCoefficientsResolution();
     }
@@ -61,9 +63,9 @@ void CompressedCumulativeWaveletDensityEstimator::DecomposeToTheSameResolution()
  * @return Lowest resolution index of current estimators.
  */
 int CompressedCumulativeWaveletDensityEstimator::FindLowestResolution() const {
-  int lowest_resolution = estimators[0]->GetResolutionIndex();
+  int lowest_resolution = estimators_[0]->GetResolutionIndex();
 
-  for(const auto & estimator : estimators){
+  for(const auto & estimator : estimators_){
     if(estimator->GetResolutionIndex() < lowest_resolution){
       lowest_resolution = estimator->GetResolutionIndex();
     }
@@ -73,20 +75,20 @@ int CompressedCumulativeWaveletDensityEstimator::FindLowestResolution() const {
 }
 
 void CompressedCumulativeWaveletDensityEstimator::UpdateWeights() {
-  if(estimators.size() > 2){
-    estimators[0]->MultiplyWeight(1.0 - weights_modifier_);
-    estimators[1]->MultiplyWeight(weights_modifier_);
+  if(estimators_.size() > 1){
+    estimators_[0]->MultiplyWeight(1.0 - weights_modifier_);
+    estimators_[1]->MultiplyWeight(weights_modifier_);
   }
 }
 
 void CompressedCumulativeWaveletDensityEstimator::ConvexMergeEstimators() {
-  if(estimators.size() < 2){
+  if(estimators_.size() < 2){
     return;
   }
 
-  auto merged_estimator = estimators[0]->Merge(estimators[1].get());
-  estimators.clear();
-  estimators.push_back(WDEPtr(merged_estimator));
+  auto merged_estimator = estimators_[0]->Merge(estimators_[1].get());
+  estimators_.clear();
+  estimators_.push_back(WDEPtr(merged_estimator));
 }
 
 

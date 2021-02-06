@@ -26,7 +26,8 @@ class WaveletDensityEstimator{
     virtual void LowerCoefficientsResolution() = 0;
 
     virtual int GetResolutionIndex() const = 0;
-    virtual vector<EmpiricalCoefficientData> GetEmpiricalCoefficients() const = 0;
+    virtual vector<EmpiricalCoefficientData> GetEmpiricalScalingCoefficients() const = 0;
+    virtual vector<EmpiricalCoefficientData> GetEmpiricalWaveletCoefficients() const = 0;
     virtual unsigned int GetEmpiricalCoefficientsNumber() const = 0;
 
     virtual double GetWeight() const = 0;

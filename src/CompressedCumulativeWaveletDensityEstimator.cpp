@@ -25,8 +25,6 @@ void CompressedCumulativeWaveletDensityEstimator::UpdateEstimator(const vector<d
 }
 
 void CompressedCumulativeWaveletDensityEstimator::AddNewEstimatorFromBlock(vector<double> values_block) {
-  std::sort(values_block.begin(), values_block.end());
-
   estimators_.push_back(WDEPtr(wde_factory_method_(values_block)));
 }
 

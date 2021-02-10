@@ -5,6 +5,8 @@
 #ifndef COMPRESSED_CUMULATIVE_WDE_OVER_STREAM_TRANSLATEDDILATEDSCALINGFUNCTION_H
 #define COMPRESSED_CUMULATIVE_WDE_OVER_STREAM_TRANSLATEDDILATEDSCALINGFUNCTION_H
 
+#include <vector>
+
 #include <boost/math/special_functions/daubechies_scaling.hpp>
 #include <boost/math/filters/daubechies.hpp>
 
@@ -21,11 +23,17 @@ class TranslatedDilatedScalingFunction{
     std::pair<double, double> GetTranslatedDilatedScalingFunctionSupport() const;
     std::array<double, 2 * daubechies_wavelet_number_> GetFilterCoefficients();
 
+    double GetRegularity() const;
+
     boost::math::daubechies_scaling<double, daubechies_wavelet_number_> scaling_function_;
 
   protected:
     double dilation_index_; // j
     double translation_index_; // k
+
+    // Regularities taken from Vidakovic book (page 85).
+    // I use Sobolev ones.
+    static const std::vector<double> regularities_;
 
 };
 

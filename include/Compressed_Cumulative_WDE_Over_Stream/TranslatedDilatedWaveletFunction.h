@@ -21,7 +21,7 @@ class TranslatedDilatedWaveletFunction {
     std::pair<double, double> GetTranslatedDilatedWaveletFunctionSupport() const;
     std::array<double, 2 * daubechies_wavelet_number_> GetFilterCoefficients();
 
-    boost::math::daubechies_scaling<double, daubechies_wavelet_number_> scaling_function_;
+    boost::math::daubechies_wavelet<double, daubechies_wavelet_number_> wavelet_function_;
 
   protected:
     double dilation_index_; // j

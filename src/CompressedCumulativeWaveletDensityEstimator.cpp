@@ -20,7 +20,16 @@ void CompressedCumulativeWaveletDensityEstimator::UpdateEstimator(const vector<d
   ConvexMergeEstimators();
   // At this points there should be only one estimator.
   while(estimators_[0]->GetEmpiricalCoefficientsNumber() > maximal_number_of_empirical_coefficients_){
-    estimators_[0]->LowerCoefficientsResolution();
+    if(estimators_[0]->GetEmpiricalScalingCoefficientsNumber() > maximal_number_of_empirical_coefficients_){
+      estimators_[0]->RemoveSmallestWaveletCoefficients();
+      estimators_[0]->LowerCoefficientsResolution();
+    } else {
+      double p = (maximal_number_of_empirical_coefficients_ - estimators_[0]->GetEmpiricalScalingCoefficientsNumber());
+      p /= estimators_[0]->GetEmpiricalWaveletCoefficientsNumber();
+      p = 1 - p;
+      unsigned int number_of_wavelet_coefficients_to_remove = p * estimators_[0]->GetEmpiricalWaveletCoefficientsNumber();
+      estimators_[0]->RemoveSmallestWaveletCoefficients(number_of_wavelet_coefficients_to_remove);
+    }
   }
 }
 

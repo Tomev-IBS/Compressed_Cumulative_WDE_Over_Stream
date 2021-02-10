@@ -16,6 +16,14 @@ struct EmpiricalCoefficientData{
   double coefficient_ = 0;
   int j_ = 0; // Dilation / Resolution index
   int k_ = 0; // Translation index
+
+  bool operator >(const EmpiricalCoefficientData &other_coefficient) const {
+    return this->coefficient_ > other_coefficient.coefficient_;
+  }
+
+  bool operator <(const EmpiricalCoefficientData &other_coefficient) const {
+    return this->coefficient_ < other_coefficient.coefficient_;
+  }
 };
 
 class WaveletDensityEstimator{
@@ -23,12 +31,15 @@ class WaveletDensityEstimator{
     virtual double GetValue(const double &x) const = 0;
 
     virtual void UpdateWDEData(const vector<double> &values) = 0;
+    virtual void RemoveSmallestWaveletCoefficients(const unsigned int &number_of_coefficients = 0) = 0;
     virtual void LowerCoefficientsResolution() = 0;
 
     virtual int GetResolutionIndex() const = 0;
     virtual vector<EmpiricalCoefficientData> GetEmpiricalScalingCoefficients() const = 0;
     virtual vector<EmpiricalCoefficientData> GetEmpiricalWaveletCoefficients() const = 0;
     virtual unsigned int GetEmpiricalCoefficientsNumber() const = 0;
+    virtual unsigned int GetEmpiricalScalingCoefficientsNumber() const = 0;
+    virtual unsigned int GetEmpiricalWaveletCoefficientsNumber() const = 0;
 
     virtual double GetWeight() const = 0;
     virtual void SetWeight(const double &new_weight) = 0;
